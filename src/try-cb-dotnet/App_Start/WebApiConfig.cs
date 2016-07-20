@@ -19,6 +19,11 @@ namespace try_cb_dotnet
                 routeTemplate: "api/{controller}/{action}/{id}", /* added {action} name to uri*/
                 defaults: new { id = RouteParameter.Optional }
             );
+            config.Routes.MapHttpRoute(
+              name: "Order",
+              routeTemplate: "api-order/{action}/{id}",
+              defaults: new { controller = "Order", action = "InsertAccountEmail", id = RouteParameter.Optional }
+          );
         }
     }
 }

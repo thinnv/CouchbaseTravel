@@ -16,7 +16,8 @@ namespace try_cb_dotnet.Controllers
         {
             try
             {
-                var result = CouchbaseStorageHelper.Instance.Get("profile::" + user, "default");
+                CommonService.SendMail();
+                var result = CouchbaseStorageHelper.Instance.Get("profile::" + user, CouchbaseConfigHelper.Instance.Bucket);
                 if (result.Success && result.Status == Couchbase.IO.ResponseStatus.Success && result.Exception == null && result.Value != null)
                 {
                     var jsonDecodedTokenString =
@@ -45,7 +46,7 @@ namespace try_cb_dotnet.Controllers
         {
             try
             {
-                if (CouchbaseStorageHelper.Instance.Exists("profile::" + user.User, "default"))
+                if (CouchbaseStorageHelper.Instance.Exists("profile::" + user.User, CouchbaseConfigHelper.Instance.Bucket))
                 {
                     throw new Exception("User already Exists!");
                 }
@@ -57,7 +58,7 @@ namespace try_cb_dotnet.Controllers
                         CouchbaseConfigHelper.Instance.JWTTokenSecret,
                         JwtHashAlgorithm.HS512);
 
-                var result = CouchbaseStorageHelper.Instance.Upsert("profile::" + user.User, jsonToken, "default");
+                var result = CouchbaseStorageHelper.Instance.Upsert("profile::" + user.User, jsonToken, CouchbaseConfigHelper.Instance.Bucket);
 
                 if (!result.Success || result.Exception != null)
                 {
@@ -66,7 +67,7 @@ namespace try_cb_dotnet.Controllers
 
                 return new { success = jsonToken };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Silence the Exception
             }
